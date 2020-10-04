@@ -1,14 +1,15 @@
-# Topic
+# 1.Topic
 clustered Genetic algorithms with greedy initialization
 
 20170620 SeongwoongJo
 
-# Key Idea
+# 2. Introduction
+## 2.1 Key Idea
 1. Parallel GA for python multiprocessing pool
 2. Good parents make a good offspring. Let's focus on the initialization
 3. Large-scale experiments for testing 
 
-# example usage and option description
+## 2.2 Example usage and description
 
 ```
 python solver.py -t rl11849.tsp -p 500 -f 100000000 -n 20 -g 500 \
@@ -19,6 +20,7 @@ python solver.py -t rl11849.tsp -p 500 -f 100000000 -n 20 -g 500 \
 -p : number of population
 -f : maximum fitness function call
 -g : generation 
+-n : number of multiprocessing worker
 
 --elitism_rate : elitism_rate for the maximum population
 --init : the mode of initialization
@@ -35,16 +37,20 @@ python solver.py -t rl11849.tsp -p 500 -f 100000000 -n 20 -g 500 \
 
 ```
 
-# Observation and Motivation
+## 2.3 Observation and Motivation
 I think that it is very important to control the balance between randomness(diversity) and superiortiy of each population. For the fixed population size, diversity and superiority are a relationship of trade-off. For example, as we search for the large space, the points are getting sparse, which means that diversity is increasing and superiority of each chromosome is decreasing.
 So, I focus on the initialization method which makes the superior initialized population. Specifically, My method is reducing search space using k-means clustering and making great parents using (partial) greedy algorithm. In the term (partial) greedy algorithm is conducted by simply doing greedy algorithm on the subset of the whole city, and subset size is controlled by greedy_ratio. ( greety_ratio 0 for the random initializaiton and 1 for the original greedy algorithm)
 Finally, I can control the balance by greedy_ratio and cluster numbers.
 
-# Algorithm and Implementation
-## Parallel GA
+# 3. Algorithm and Implementation
+## 3.1 Parallel Genetic Algorithm
+I implement multiprocessing genetic algorithm using python 'multiprocessing' library.
+I can 
+```
+from multiprocessing
+```
 
-
-## Algorithm
+## 3.2 Algorithm
 1. defination
 
 2. Initialization
