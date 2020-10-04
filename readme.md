@@ -1,12 +1,13 @@
-# 1.Topic
-clustered Genetic algorithms with greedy initialization
-
+# 1. Fast and Smart Genetic algorithm with Clustered greedy initialization
 20170620 SeongwoongJo
+
+Before start, I've never seen any other papers and references except for the slides from the lecture and 'pmx' algorithm.
+All the implementations are made from me
 
 # 2. Introduction
 ## 2.1 Key Idea
 1. Parallel GA for python multiprocessing pool
-2. Good parents make a good offspring. Let's focus on the initialization
+2. Good parents make a good offspring. Let's focus on the initialization - Kmeans clustring + greedy algorithm
 3. Large-scale experiments for testing 
 
 ## 2.2 Example usage and description
@@ -45,60 +46,52 @@ Finally, I can control the balance by greedy_ratio and cluster numbers.
 # 3. Algorithm and Implementation
 ## 3.1 Parallel Genetic Algorithm
 I implement multiprocessing genetic algorithm using python 'multiprocessing' library.
-I can 
+I can boost the training speed by using 20 workers simultaneously.
+
 ```
 from multiprocessing
 ```
 
 ## 3.2 Algorithm
-1. defination
+### 3.2.1 Definition
+### 3.2.2 Block Diagram of algorithm
+The main difference between my algorithm and normal GA is that my algorithm has additional k-mean clustering block and cluster Merging block.
 
-2. Initialization
-3. 
+K-means Clustering
+Initialization
+Selection
+Crossover
+Mutation
+Cluster merging
 
-# experiments 
-I num_clusters, greedy_ratio 
+각 단계 별 Time complexity랑 Fitness function calling 계산하기
 
+### 3.3.3 Step by Step code analysis
 
-1. num_clusters, greedy_ratio 를 동시에 조절
+# 4. Experimental results
+The evaluation of the algorithm is viewed on two perspective: 1.Time and 2.Performance
 
-population = 1000, generation = 1000, merge_g = step_scheduling
+## 4.1 Parallel GA
 
--> merge_g = (generation//(log_2(num_clusters)))
+num workers = 1 vs num workers = 20 일때 Intialization time 비교
 
-num_clusters vs greedy_ratio 조절하면서 performance, time-consuming 판단
+## 4.2 Clustered greedy algorithm
+### 4.2.1 Default setting
+고정된 하이퍼 파라미터 
+변동된 하이퍼 파라미터
+merge step 
 
-num_clusters = [1,2,4,8,16]
-greedy_ratio = [0,0.5,0.75,0.875,0.95,0.98,1]
+### 4.2.2 Hyperparameters-Performance result
+[image]
 
-각 실험 당 10회 씩 반복해서, 평균값을 2d plot, 물론 sigma도 기록함
+### 4.2.3 Hyperparameters-Time result
+[image]
 
-fitness limit를 고정하고, fitness limit에 따라 generation을 정함..! 
+### 4.2.4 Time-Performance result
+[image]
 
-5*10*10 = 500회 실험
-
-# Failed approaches
+# 5. Failed approaches
 1. mcmc initialization
 2. stochastic greedy initialization
 
-
-## report
-
-Title : clustered Genetic algorithms with greedy initialization
-
-0. Summary(Conclusion) of report
-    - 
-1. Motivation
-    - NP-hard problem like TSP has enormous search space where the number of cities increase. For GA, to
-2. usage and explanation for flags
-3. Implementation trick
-    - Parallel GA by using python multiprocessing Pool
-    - 
-4. Algorithm Introduction
-    1. 전체 도식표
-    2. kmeans-clustering
-    3. 
-5. experimental results
-6. conclusion
-    - BO,GA for hyperparameter optimization 
-    
+# 6. Conclusion
