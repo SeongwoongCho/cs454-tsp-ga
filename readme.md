@@ -77,18 +77,23 @@ num workers = 1 vs num workers = 20 일때 Intialization time 비교
 
 ## 4.2 Clustered greedy algorithm
 ### 4.2.1 Default setting
-고정된 하이퍼 파라미터 
-변동된 하이퍼 파라미터
-merge step 
+./run_exp.sh
+1. Fixed Hyperparameters
+```
+merge step
+```
+2. Search Space
+```
+```
 
 ### 4.2.2 Hyperparameters-Performance result
-[image]
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-tsp_distance.png)
 
 ### 4.2.3 Hyperparameters-Time result
-[image]
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-time.png)
 
 ### 4.2.4 Time-Performance result
-[image]
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/time-performance.png)
 
 # 5. Failed approaches
 1. mcmc initialization
