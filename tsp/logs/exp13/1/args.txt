@@ -1,0 +1,23 @@
+{
+  "tsp": "rl11849.tsp",
+  "num_workers": 20,
+  "population": 500,
+  "generation": 500,
+  "fitness_limit": 100000000,
+  "elitism_rate": 0.2,
+  "offspring_rate": 1.0,
+  "init": "partial_greedy",
+  "crossover": "my",
+  "greedy_ratio": 0.75,
+  "greedy_weights": [
+    0.1,
+    0.9
+  ],
+  "greedy_ratios": [
+    0.9,
+    0.1
+  ],
+  "num_clusters": 8,
+  "kmeans_iter": 200,
+  "save_dir": "./logs/exp13/1"
+}
