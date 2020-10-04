@@ -1,40 +1,58 @@
-## 923288
+# Topic
+clustered Genetic algorithms with greedy initialization
 
-## additional ideas
-- stochastic greedy init?
-    - 굳이 randomness를 줄필요 없이, 혹은 매우 적은 randomness를 주면서, n in [1,2,3] n-way greedy algorithm을 random하게 하면서 다양성을 확보
+20170620 SeongwoongJo
 
-# method
-python solver.py -t rl11849.tsp -n 20 -p 500 -g 500 -f 100000000 --elitism_rate 0.2 --offspring_rate 1 --init partial_greedy --crossover my --greedy_ratio 1 --num_clusters 16 --greedy_max_ways 2 --kmeans_iter 200 --save_dir ./logs/stochastic_greedy
+# Key Idea
+1. Parallel GA for python multiprocessing pool
+2. Good parents make a good offspring. Let's focus on the initialization
+3. Large-scale experiments for testing 
 
-# Methodology 
-## concept : Good parents make a good offspring
+# example usage and option description
 
-## controlling dynamics of genetic algorithm using temparature
-1. Genetic algorithm
-    1. initialize population
-        - designing : reasonable한 서칭 공간을 만들어 놓고, 해당 공간 사이의 조합을 최대화 시키는 것이 좋을 듯. 
-        - random greey init : 처음에 random확률이 높은게 좋나, 나중에 random 확률이 높은게 좋나? 시간의 경우는 처음에 random확률이 높은게 좋음. random 확률 scheduling? mcmc, random, shortest 중애서 선택? 
-        - mcmc init?
-        - SA?
-        - inversion sequence
-    2. 
-2. mutation scheduling?
+```
+python solver.py -t rl11849.tsp -p 500 -f 100000000 -n 20 -g 500 \
+--elitism_rate 0.2 --init partial_greedy --crossover my \
+--greedy_ratio 1 --num_clusters 16 --kmeans_iter 500 --save_dir ./logs/results
 
-## property
+-t : the location of .tsp file to load
+-p : number of population
+-f : maximum fitness function call
+-g : generation 
 
-randomness = diversity
-possible_search_space != total_search_space
+--elitism_rate : elitism_rate for the maximum population
+--init : the mode of initialization
+--crossover : the mode of crossover
+
+--greedy_ratio : Percentage of cities to apply the greedy algorithm
+--num_clusters : initial number of the clusters
+--kmeans_iter : k-means clustering iterations
+--save_dir : where to save logs and hyperpameter informations
+
+=====below arguments are deprecated(not used anymore)=====
+
+****TODO
+
+```
+
+# Observation and Motivation
+I think that it is very important to control the balance between randomness(diversity) and superiortiy of each population. For the fixed population size, diversity and superiority are a relationship of trade-off. For example, as we search for the large space, the points are getting sparse, which means that diversity is increasing and superiority of each chromosome is decreasing.
+So, I focus on the initialization method which makes the superior initialized population. Specifically, My method is reducing search space using k-means clustering and making great parents using (partial) greedy algorithm. In the term (partial) greedy algorithm is conducted by simply doing greedy algorithm on the subset of the whole city, and subset size is controlled by greedy_ratio. ( greety_ratio 0 for the random initializaiton and 1 for the original greedy algorithm)
+Finally, I can control the balance by greedy_ratio and cluster numbers.
+
+# Algorithm and Implementation
+## Parallel GA
 
 
-greedy_ratio : 낮음 수록 randomness 커짐, possible_search_space 작아짐
-elitism_rate : 낮을 수록 randomness 커짐
-mutation_rate : 높을 수록 randomness 커짐
-num_clusters : 높을 수록 possible_search_space 작아짐, randomness 작아짐
+## Algorithm
+1. defination
 
+2. Initialization
+3. 
 
+# experiments 
+I num_clusters, greedy_ratio 
 
-## bench_mark 
 
 1. num_clusters, greedy_ratio 를 동시에 조절
 
@@ -53,9 +71,14 @@ fitness limit를 고정하고, fitness limit에 따라 generation을 정함..!
 
 5*10*10 = 500회 실험
 
+# Failed approaches
+1. mcmc initialization
+2. stochastic greedy initialization
+
+
 ## report
 
-Title : clustered Genetic algorithms with partial greedy initialization
+Title : clustered Genetic algorithms with greedy initialization
 
 0. Summary(Conclusion) of report
     - 
@@ -72,3 +95,4 @@ Title : clustered Genetic algorithms with partial greedy initialization
 5. experimental results
 6. conclusion
     - BO,GA for hyperparameter optimization 
+    
