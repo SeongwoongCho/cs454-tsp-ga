@@ -67,7 +67,7 @@ I adjust this procedure on all the genetic procedure: initialization, selection,
 ### 3.2.1 Block Diagram of algorithm
 The main difference between my algorithm and normal GA is that my algorithm has additional k-mean clustering block and cluster Merging block.
 
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/overall%20algorithm%20block%20diagram.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/overall%20algorithm%20block%20diagram.png?raw=true)
 
 Below is the psuedo process
 ```
@@ -210,9 +210,9 @@ def my(p1,p2):
 To increase the diversity of the population, I combine two different Crossover policies. The first one is pmx crossover, which is usually used in tsp problem. And the other is order crossover, which is explained in the professor's lecture note. Each of the crossover is perforemd with the probability 50%.
 
 #### 3.3.2.3 Merge clusters
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20clusters%20block%20diagram.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20clusters%20block%20diagram.png?raw=true)
 
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20policy%20diagram.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20policy%20diagram.png?raw=true)
 
 ```
 def connect(chromosome1,chromosome2):
@@ -239,7 +239,7 @@ The time is calculated on the condition of greedy initialization(when greedy_rat
 We can observe that parallel GA with many workers can speedup the time tremendously.
 
 ## 4.2 Evolution Curve
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/evolution-curve.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/evolution-curve.png?raw=true)
 
 The above curve is the example curve when num_clusters = 16, merge_g = 100.
 On the every beginning iteration right after the merge, the distance rapidly decreases. You can observe that on every iteration around multiples of merge_g(=100), there is sudden improvement.
@@ -274,20 +274,20 @@ num_clusters : [1 2 4 8 16]
 ```
 
 ### 4.3.2 Hyperparameters-Performance result
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-tsp_distance.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-tsp_distance.png?raw=true)
 
 When the greedy ratio is low(i.e initialization is not effective), you can see that many num clusters effectively reduce the search space and makes good intialization effect.
 However, when greedy ratio goes up, too many num clusters badly affects to the performance.
 I guess that this is because greedy algorithm gives very good approximation to the tsp.(and k-means clustering disrupts that procedure)
 
 ### 4.3.3 Hyperparameters-Time result
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-time.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-time.png?raw=true)
 
 As the greedy ratio is lower and the number of clusters is higher, the time is reduced more.
 Since greedy ratio only affects to the duration of initialization, the number of clusters will much more affects to the time as the max GA generation is higher.
 
 ### 4.3.4 Time-Performance result
-![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/time-performance.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/time-performance.png?raw=true)
 
 |         |   distance    | GA time  | init time |
 | ------------- |:-------------:| -----:| ------:|
