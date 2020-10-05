@@ -4,6 +4,8 @@
 Before start, I've never seen any other papers and references except for the slides from the lecture and 'pmx' algorithm.
 All the implementations are made from me
 
+## Table of Content
+
 # 2. Introduction
 ## 2.1 Key Idea
 1. Parallel GA for python multiprocessing pool
@@ -63,21 +65,151 @@ l = pool.map(func, args)
 I adjust this procedure on all the genetic procedure: initialization, selection, crossover, mutation
 
 ## 3.2 Algorithm
-### 3.2.1 Basic Definition
-### 3.2.2 Block Diagram of algorithm
+### 3.2.1 Block Diagram of algorithm
 The main difference between my algorithm and normal GA is that my algorithm has additional k-mean clustering block and cluster Merging block.
 
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/overall%20algorithm%20block%20diagram.png)
 
-### 3.3.3 Step by Step code analysis
+Below is the psuedo code of the overall process.
+```
+Input : K(num_clusters), pop_size(population_size)
+
+1. Divide all cities into K group(cluster), and initialize each group by the partial greedy algorithm with population = pop_size//K
+2. For each group, Do GA(selection, mutation, procedure)
+  2-1. Merge two group into single group when satisfying the merging condition. After merging, the number of group should be half and each group's population size is double. 
+3. Repeat 2 until the end condition
+```
+
+### 3.3.2 Step by Step code analysis
 Selection, Mutation, Crossover is same as the general procedure. Thus in this part, I will explain the three components simply.
-1. Initialization
+#### 3.3.2.1 Initialization
 - K-means clustering
+
+```
+def k_means_clustering(datas, num_clusters = 1, n_iter = 1000):    
+    xs = []
+    ys = []
+    for x,y in datas:
+        xs.append(x)
+        ys.append(y)
+        
+    xmin, xmax = np.min(xs), np.max(xs)
+    ymin, ymax = np.min(ys), np.max(ys)
+
+    centroids = []
+    for _ in range(num_clusters):
+        centroids.append((np.random.uniform(xmin,xmax),np.random.uniform(ymin,ymax)))  // (1)
+    
+    for _ in tqdm(range(n_iter)):
+        ## update points
+        base_sets = [[] for _ in range(num_clusters)]
+        for o,(ptx,pty) in enumerate(datas):
+            min_dis = np.inf
+            loc = 0
+            for i, (cent_x, cent_y) in enumerate(centroids):
+                dis = ((ptx-cent_x)**2 + (pty - cent_y)**2)**0.5
+                if dis < min_dis:
+                    min_dis = dis
+                    loc = i
+            base_sets[loc].append(o)
+        
+        ## update centroids
+        for i in range(num_clusters):
+            x_cent = 0
+            y_cent = 0
+            for o in base_sets[i]:
+                x_cent += datas[o][0]/len(base_sets[i])
+                y_cent += datas[o][1]/len(base_sets[i])
+            centroids[i] = (x_cent,y_cent)
+    return base_sets, centroids
+```
+
+For given datas, conduct kmeans-clustering with the given num_clusters and iterations. As you can see in (1), initial centroids are initialized by (U[Lx,Hx],U[Ly,Hy]) where U is uniform distribution and each of Lx,Ly is the lowest value of x,y among all datas, and Hx,Hy is the highest value of x,y among all datas.
+Finally, the above function returns centroids and the list of base_set, which is a set of cities corresponding to each centroid.
+
 - Partial greedy algorithm
 
-2. GA procedure(Selection, Mutation, Crossover)
-The GA procedure is done on each of the clusters. 
-3. Merge clusters
+```
+def partial_greedy(args):
+    """
+    주어진 도시들에서 greedy_ratio의 비율만큼 random subset을 뽑고 해당 지역들에 대하여 greedy algorithm을 수행
+    """
+    
+    datas, greedy_ratio,base_set = args
+    random.shuffle(base_set)
+    pivot = max(1,int((1-greedy_ratio) * len(base_set)))
+    chromosome = base_set[:pivot].copy()
+    new_base_set = base_set[pivot:].copy()
+    
+    while len(new_base_set) > 0:
+        current_node = chromosome[-1]
+        min_dist = np.inf
+        min_query_arg = 0
+        for arg,query_node in enumerate(new_base_set):
+            dist = calc_distance(datas[current_node], datas[query_node])
+            if dist < min_dist:
+                min_dist = dist
+                min_query_arg = arg
+        chromosome.append(new_base_set.pop(min_query_arg))
+        
+    fit = fitness(chromosome,datas)
+    
+    return chromosome, fit
+```
+Partial Greedy Algorithm is a simple extension of the greedy algorithm and is able to control the randomness.
+For each base_set in base_sets, partial greedy algorithm is conducted with the given greedy_ratio and population.
+The above code is a original version of the partial greedy algorithm which only consider 1-way greedy algorithm.
+
+#### 3.3.2.2 GA procedure(Selection, Mutation, Crossover)
+The GA procedure is done on each of the base_set.
+- Selection
+```
+def elitism_selection(population, elitism_rate):
+    """
+    population : List of (chromosome, fit)
+    elitism_rate : 
+    
+    return (chromosome, k)
+    """
+    elitism_k = int(len(population)*elitism_rate)
+    tournament_pool = random.sample(population, elitism_k)
+    result = sorted(tournament_pool, key=lambda x: x[1], reverse=False)
+    return result[0]
+```
+
+I adopted 'elitism selection' for the whole process. elitism_k is calculated by the product of elitism_rate and population size. 
+
+- Mutation
+```
+def mutate(sequence, datas):
+    new_sequence = sequence.copy()
+    i,j = random.sample(range(len(sequence)),2)
+    if i > j:
+        i,j = j,i
+        
+    prob = np.random.uniform()
+    if  prob< 0.05:
+        ## random window switching
+        new_sequence = new_sequence[:i] + new_sequence[j:] + new_sequence[i:j]
+    elif prob < 0.1:
+        ## random two city switching
+        new_sequence[i],new_sequence[j] = new_sequence[j],new_sequence[i]
+    fit = fitness(new_sequence,datas)
+    return new_sequence, fit
+```
+I adopt two mutation policies. One is random window switching, and the other is random two city switching. Each of the mutation is performed with the probability 5%
+
+- Crossover
+```
+def my(p1,p2):
+    if np.random.uniform()<0.5:
+        return pmx(p1,p2)
+    else:
+        return order(p1,p2)
+```
+To increase the diversity of the population, I combine two different Crossover policies. The first one is pmx crossover, which is usually used in tsp problem. And the other is order crossover, which is explained in the professor's lecture note. Each of the crossover is perforemd with the probability 50%.
+
+#### 3.3.2.3 Merge clusters
 ![image](merging_algorithm_diagram.png)
 
 # 4. Experimental results
@@ -85,7 +217,7 @@ The evaluation of the algorithm is viewed on two perspective: 1.Time and 2.Perfo
 
 ## 4.1 Parallel GA
 
-|  num workers  |   time        |    
+|  num workers  |   time        |
 | ------------- |:-------------:|
 | 1  |  |
 | 20 |  | 
@@ -146,8 +278,7 @@ On the restrict computing resource, K-means clustering with large K will be help
 
 
 ### 4.3 My Final Submission
-My final submission result is 1,094,827.02 and achieved by the below hyperparameter optinos.
-With >1 num clusters and high greey ratio and low generation, I can catch both time and performance.
+My final submission result is 1,094,827.02 and achieved by the below hyperparameter options. Since the purpose is achieving high score, I set population as a very large number(12000). With >1 num clusters and high greey ratio and low generation, I can catch both time and performance.
 ```
 "num_workers": 20,
 "population": 12000,
