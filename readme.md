@@ -75,7 +75,8 @@ Input : K(num_clusters), pop_size(population_size)
 
 1. Divide all cities into K group(cluster), and initialize each group by the partial greedy algorithm with population = pop_size//K
 2. For each group, Do GA(selection, mutation, procedure)
-  2-1. Merge two group into single group when satisfying the merging condition. After merging, the number of group should be half and each group's population size is double. 
+  2-1. Merge two group into single group when satisfying the merging condition.
+       After merging, the number of group should be half and each group's population size is double. 
 3. Repeat 2 until the end condition
 ```
 
