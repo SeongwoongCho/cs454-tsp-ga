@@ -1,7 +1,7 @@
 #!/bin/bash
 
-exps=(1 2 3 4 5)
-greedy_ratios=(0 0.5 0.75 0.9 0.97 1)
+exps=(1)
+greedy_ratios=(0 0.5 0.75 0.9 0.97)
 num_clusters=(1 2 4 8 16)
 #exps=(1 2)
 #greedy_ratios=(0)

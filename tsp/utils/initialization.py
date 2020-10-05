@@ -1,9 +1,9 @@
 import random
 import numpy as np
 import time
-from .utils import *
-from .mutation import mutate
-from .selection import elitism_selection
+from utils import *
+from mutation import mutate
+from selection import elitism_selection
 from tqdm import tqdm
 from multiprocessing.pool import Pool
 
@@ -227,3 +227,11 @@ def mcmc(args):
     
 
 """
+
+if __name__ == '__main__':
+    datas = parse_tsp('../rl11849.tsp')
+    base_sets, centroids = k_means_clustering(datas,1, 1)
+    initialize = get_initialization('greedy')
+    st = time.time()
+    population = initialize(20,1,datas,base_sets[0])
+    print(time.time()-st)

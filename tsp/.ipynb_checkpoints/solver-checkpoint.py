@@ -36,16 +36,12 @@ def get_args():
     parser.add_argument('-p', '--population', type = int, default = 1)
     parser.add_argument('-g', '--generation', type = int, default = 100)
     parser.add_argument('-f', '--fitness_limit', type = int, default = 2000)
-    parser.add_argument('--elitism_rate', type = float, default = 0.1)
+    parser.add_argument('--elitism_rate', type = float, default = 0.2)
     parser.add_argument('--offspring_rate', type = float , default = 1., help = "the rate between parents and offsprings, rate = offsprings / parents")
     parser.add_argument('--init',type=str,default='random')
     parser.add_argument('--crossover', type = str, default = 'my')
     
     parser.add_argument('--greedy_ratio', type = float, default = 0.5)
-    parser.add_argument('--greedy_weights', type = list, default = [0.1,0.9])
-    parser.add_argument('--greedy_ratios', type = list, default = [0.9,0.1])
-    parser.add_argument('--greedy_max_ways', type = int, default = 1)
-    
     parser.add_argument('--num_clusters',type = int, default = 1)
     parser.add_argument('--kmeans_iter', type = int, default = 1000)
 #    parser.add_argument('--merge_g', type = int, default = 200)
@@ -53,6 +49,9 @@ def get_args():
     
     """
     ## below arguments are deprecated ##
+    parser.add_argument('--greedy_weights', type = list, default = [0.1,0.9])
+    parser.add_argument('--greedy_ratios', type = list, default = [0.9,0.1])
+    parser.add_argument('--greedy_max_ways', type = int, default = 1)
     
     parser.add_argument('--debug', action = 'store_true')
     parser.add_argument('--mcmc_iter_ratio', type = float, default = 0.2, help = "the ratio between mcmc iteration and maximum fitness call ")
@@ -81,7 +80,10 @@ def get_single_offspring(args):
 if __name__ == '__main__':
     args = get_args()
     
-    assert args.population * args.elitism_rate // args.num_clusters >= 2
+#    assert args.population * args.elitism_rate // args.num_clusters >= 2
+
+    args.num_clusters = min(args.population * args.elitism_rate/2,args.num_clusters)
+
     logger = Logger(args.save_dir)
     logger.write_args(args)
     datas = parse_tsp(args.tsp)
@@ -135,7 +137,6 @@ if __name__ == '__main__':
         populations = new_populations
         
         ## merge clustered populations
-        merge_g = 5
         if len(base_sets) > 1 :
             if (g+1)%merge_g == 0:
                 populations, centroids, base_sets = merge_clusters(populations, centroids,base_sets,args.elitism_rate, datas)
@@ -163,8 +164,8 @@ if __name__ == '__main__':
         if approx_best[1] < best[1]:
             best = approx_best
             
-        print(best[1])
+#        print(best[1])
         logger.write_gen(g, time.time()-start_time, best[1])
-    
+        make_solution(args.save_dir,best[0])
     make_solution(args.save_dir,best[0])
     print(best[1])

@@ -47,7 +47,7 @@ def my(p1,p2):
 
 def get_crossover(name,**kwargs):
     if name == 'pmx':
-        return omx
+        return pmx
     if name == 'order':
         return order
     if name == 'my':

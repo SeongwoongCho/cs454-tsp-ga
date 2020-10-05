@@ -1,10 +1,10 @@
 {
   "tsp": "rl11849.tsp",
   "num_workers": 20,
-  "population": 5000,
+  "population": 12000,
   "generation": 20,
   "fitness_limit": 100000000,
-  "elitism_rate": 0.2,
+  "elitism_rate": 0.4,
   "offspring_rate": 1.0,
   "init": "partial_greedy",
   "crossover": "my",
@@ -20,5 +20,5 @@
   "greedy_max_ways": 1,
   "num_clusters": 4,
   "kmeans_iter": 500,
-  "save_dir": "./logs/greedy/7"
+  "save_dir": "./logs/greedy/9"
 }

@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from .utils import *
+from utils import *
 
 def mutate(sequence, datas):
     new_sequence = sequence.copy()
