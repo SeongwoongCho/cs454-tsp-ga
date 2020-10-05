@@ -2,7 +2,7 @@
 20170620 SeongwoongJo
 
 Before start, I've never seen any other papers and references except for the slides from the lecture and 'pmx' algorithm.
-All the implementations are made from me
+All the implementations and experiments are made from me
 
 # 2. Introduction
 ## 2.1 Key Idea
@@ -210,6 +210,7 @@ To increase the diversity of the population, I combine two different Crossover p
 
 #### 3.3.2.3 Merge clusters
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20clusters%20block%20diagram.png)
+
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20policy%20diagram.png)
 
 ```
@@ -230,14 +231,15 @@ The evaluation of the algorithm is viewed on two perspective: 1.Time and 2.Perfo
 
 |  num workers  |   time        |
 | ------------- |:-------------:|
-| 1  |  |
-| 20 |  | 
+| 1  | 836.949|
+| 20 | 59.723 | 
 
 The time is calculated on the condition of greedy initialization(when greedy_ratio = 1) with population_size = 20
 We can observe that parallel GA with many workers can speedup the time tremendously.
 
 ## 4.2 Evolution Curve
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/evolution-curve.png)
+
 The above curve is the example curve when num_clusters = 16, merge_g = 100.
 On the every beginning iteration right after the merge, the distance rapidly decreases. You can observe that on every iteration around multiples of merge_g(=100), there is sudden improvement.
 We can explain these phenomenons through the size of search space. When num_clusters is high before merge, each of clusters has small amount of cities and small search space. So, it can converge rapidly. On every merge step, it gradually increase possible search space and escape from the local minima.
@@ -273,8 +275,15 @@ num_clusters : [1 2 4 8 16]
 ### 4.3.2 Hyperparameters-Performance result
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-tsp_distance.png)
 
+When the greedy ratio is low(i.e initialization is not effective), you can see that many num clusters effectively reduce the search space and makes good intialization effect.
+However, when greedy ratio goes up, too many num clusters badly affects to the performance.
+I guess that this is because greedy algorithm gives very good approximation to the tsp.(and k-means clustering disrupts that procedure)
+
 ### 4.3.3 Hyperparameters-Time result
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/hps-time.png)
+
+As the greedy ratio is lower and the number of clusters is higher, the time is reduced more.
+Since greedy ratio only affects to the duration of initialization, the number of clusters will much more affects to the time as the max GA generation is higher.
 
 ### 4.3.4 Time-Performance result
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/time-performance.png)
@@ -286,7 +295,6 @@ num_clusters : [1 2 4 8 16]
 
 By comparing two points, one is best-time experiment and the other is best-distance experiment, the best-time experiment gains >270% time benefit with <50% distance loss.
 On the restrict computing resource, K-means clustering with large K will be helpful by giving large time-benefit.
-
 
 ### 4.4 My Final Submission
 My final submission result is 1,094,827.02 and achieved by the below hyperparameter options. Since the purpose is achieving high score, I set population as a very large number(12000). With >1 num clusters and high greey ratio and low generation, I can catch both time and performance.
