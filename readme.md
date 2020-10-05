@@ -311,7 +311,14 @@ My final submission result is 1,094,827.02 and achieved by the below hyperparame
 
 # 5. Failed approaches
 ## 5.1 mcmc initialization
+I tried mcmc initialization with expecting effective search, but it fails because of the too-large search space and too-many fitness call.
+The number of fitness call is equals to (sampling iteration * population size). Since the space is too large, sampling iteration also goes large, then the final number of fitness call explodes.
+
 ## 5.2 stochastic greedy initialization
+I refered to the professor's comment from the campuswire. He suggested N-way greedy algorithm and I designed stochastic greedy algorithm by mixing 1-way and 2-way greedy algorithm. The main advance is randomly choose between 1-way greedy ,2-way greedy on the each step of greedy algorithm. (original greedy algorithm is just use 1-way greedy on the every step).
+I expected that it can greatly increase diversity while maintaining superiority. But, the results says that it is worse than original, even takes longer time.
 
 # 6. Conclusion
-시간, 퍼포먼스 둘다 좋음
+I designed Clustered greedy initialization for many cities tsp problem. I suggests novel clustering and merging method that can be adjust on the GA, and It shows great speedup on the TSP. With totally random initialization, My Clustered greedy GA boosts both speed and performance. However, sadly, when the initialization method is very effective originally(like greedy algorithm with greedy_ratio = 1), the performance gets lower on the clustering methods. 
+Also, I tried mcmc initialization and novel stochastic greedy initialization, but It did not give good result.
+However, though there's some flaws on my algorithm, I expect that it will give great help to those who don't have enough computing resources. 
