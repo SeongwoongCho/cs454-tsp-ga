@@ -4,8 +4,6 @@
 Before start, I've never seen any other papers and references except for the slides from the lecture and 'pmx' algorithm.
 All the implementations are made from me
 
-## Table of Content
-
 # 2. Introduction
 ## 2.1 Key Idea
 1. Parallel GA for python multiprocessing pool
@@ -14,6 +12,12 @@ All the implementations are made from me
 
 ## 2.2 Example usage and description
 
+If you just give population and fitness limit, other hyperparameters are automatically designated.
+```
+python solver.py -t rl11849.tsp -p ${population} -f ${fitness_limit}
+```
+
+else, if you want to control other parameters rather than population and fitness limit use the follow command.
 ```
 python solver.py -t rl11849.tsp -p 500 -f 100000000 -n 20 -g 500 \
 --elitism_rate 0.2 --init partial_greedy --crossover my \
@@ -33,11 +37,6 @@ python solver.py -t rl11849.tsp -p 500 -f 100000000 -n 20 -g 500 \
 --num_clusters : initial number of the clusters
 --kmeans_iter : k-means clustering iterations
 --save_dir : where to save logs and hyperpameter informations
-
-=====below arguments are deprecated(not used anymore)=====
-
-****TODO
-
 ```
 
 ## 2.3 Observation and Motivation 
@@ -70,7 +69,7 @@ The main difference between my algorithm and normal GA is that my algorithm has 
 
 ![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/overall%20algorithm%20block%20diagram.png)
 
-Below is the psuedo code of the overall process.
+Below is the psuedo process
 ```
 Input : K(num_clusters), pop_size(population_size)
 
@@ -210,7 +209,19 @@ def my(p1,p2):
 To increase the diversity of the population, I combine two different Crossover policies. The first one is pmx crossover, which is usually used in tsp problem. And the other is order crossover, which is explained in the professor's lecture note. Each of the crossover is perforemd with the probability 50%.
 
 #### 3.3.2.3 Merge clusters
-![image](merging_algorithm_diagram.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20clusters%20block%20diagram.png)
+![image](https://github.com/SeongwoongJo/cs454-tsp-ga/blob/master/tsp/images/merge%20policy%20diagram.png)
+
+```
+def connect(chromosome1,chromosome2):
+    i = random.randint(0,len(chromosome1)-1)
+    
+    new_chromosome = chromosome1[:i] + chromosome2 + chromosome1[i:]
+    return new_chromosome
+```
+The first diagram is overall process of merging clusters, and the second diagram is merging population policy that I used and suggested.
+There are many policies can be applied to population merging. In my case, I use the below algorithm, which is motivated from genetic algorithm's selection stage. If you see the below algorithm, you can know merging population is similar to GA except for removing mutation and replace crossover with connect.
+Selection and Connect algorithm's purpose is to make good connectivity from the superior parents. (i.e a kind of selection pressure)
 
 # 4. Experimental results
 The evaluation of the algorithm is viewed on two perspective: 1.Time and 2.Performance
@@ -277,7 +288,7 @@ By comparing two points, one is best-time experiment and the other is best-dista
 On the restrict computing resource, K-means clustering with large K will be helpful by giving large time-benefit.
 
 
-### 4.3 My Final Submission
+### 4.4 My Final Submission
 My final submission result is 1,094,827.02 and achieved by the below hyperparameter options. Since the purpose is achieving high score, I set population as a very large number(12000). With >1 num clusters and high greey ratio and low generation, I can catch both time and performance.
 ```
 "num_workers": 20,
