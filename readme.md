@@ -146,6 +146,18 @@ On the restrict computing resource, K-means clustering with large K will be help
 
 
 ### 4.3 My Final Submission
+My final submission result is 1,094,827.02 and achieved by the below hyperparameter optinos.
+With >1 num clusters and high greey ratio and low generation, I can catch both time and performance.
+```
+"num_workers": 20,
+"population": 12000,
+"generation": 20,
+"elitism_rate": 0.4,
+"init": "partial_greedy",
+"crossover": "my",
+"greedy_ratio": 1.0,
+"num_clusters": 4
+```
 
 # 5. Failed approaches
 ## 5.1 mcmc initialization
